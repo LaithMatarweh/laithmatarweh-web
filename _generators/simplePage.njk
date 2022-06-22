@@ -1,0 +1,69 @@
+---
+pagination:
+  data: simplePage
+  alias: sPage
+  size: 1
+  addAllPagesToCollections: true
+layout: main.njk
+tags: simplePages
+permalink: "{{ siteInformation.siteBaseUrl }}/{{ sPage.pageSlug.current }}/"
+eleventyComputed:
+  title: "{{ sPage.pageTitle }}"
+  description: "{{ sPage.pageMainDescription | portableTextToPlainText }}"
+  image: "{% if sPage.pageMainImage and sPage.pageMainImage.length != 0 %}{% croppedUrlFor sPage.pageMainImage, 1200, 628 %}{% endif %}"
+  keywords: "{{ sPage.pageKeywords }}"
+  displayAspectRatio: 1.77
+  displayRows: 1
+  displaySize: 1
+---
+		{%- if sPage.pageSlug.current == "/" and sPage.homepageFeed and sPage.homepageFeed.length != 0 %}
+		<header class="atOnly">
+			<h1>
+				Featured Projects
+			</h1>
+		</header>
+		{%- from "macros.njk" import entryFeed with context -%}
+		{{ entryFeed(sPage.homepageFeed) }}
+		{%- else -%}
+		{%- if sPage.pageContent and sPage.pageContent.length != 0 %}
+		<header class="page-header" {%- if sPage.pageMainImage or sPage.pageMainEmbeddedMedia %} data-has-image="true" {%- endif -%}>
+			{%- if sPage.pageTitle and sPage.pageTitle.length != 0 %}
+			<h1 class="atOnly">
+				{{ sPage.pageTitle }}
+			</h1>
+			{%- endif -%}
+			{%- if sPage.pageMainImage and sPage.pageMainImage.length != 0 %}
+			<div>
+				<figure style="background-image: url('{{ sPage.pageMainImage.metadata.lqip }}'); padding-top: calc(100% / {{ sPage.pageMainImage.metadata.dimensions.aspectRatio }});">
+					{%- set pageMainImage -%}
+						{%- responsiveImage sPage.pageMainImage, "500, 800, 1100, 1500, 2000, 2500", "100vw" -%}
+					{%- endset -%}
+					{%- if sPage.pageMainImage.caption and sPage.pageMainImage.caption.length != 0 -%}
+					{%- set alt = sPage.pageMainImage.caption | portableTextToPlainText | truncate(160) -%}
+					{%- else -%}
+					{%- set alt = "" -%}
+					{%- endif %}
+					{{ pageMainImage | strip | replace("<img", '<img alt="' + alt + '"' + ' title="' + alt + '"' + 'data-zoomable="direct"') | safe }}
+					{%- if sPage.pageMainImage.caption and sPage.pageMainImage.caption.length != 0 %}
+					<figcaption>
+						{{ sPage.pageMainImage.caption | portableTextToHtml | safe }}
+					</figcaption>
+					{%- endif %}
+				</figure>
+			</div>
+			{%- endif -%}
+			{%- if sPage.pageMainEmbeddedMedia and sPage.pageMainEmbeddedMedia.length != 0 -%}
+			{%- set width = sPage.pageMainEmbeddedMedia | getAttributeFromString("width") | int -%}
+			{%- set height = sPage.pageMainEmbeddedMedia | getAttributeFromString("height") | int -%}
+			{%- set aspectRatio = width / height %}
+			<div class="embed" style="padding-top: calc(100% / {{ aspectRatio }});">
+				{{ sPage.pageMainEmbeddedMedia | strip | safe }}
+			</div>
+			{%- endif %}
+		</header>
+		<div class="page-content">
+			{%- from "macros.njk" import contentArray with context -%}
+			{{ contentArray(sPage.pageContent, "page") }}
+		</div>
+		{%- endif -%}
+		{%- endif %}

@@ -1,0 +1,219 @@
+			{%- macro contentArray(array, type) -%}
+			{#-
+				array: array of content types for pages or entries,
+				type: "page" / "entry"
+			-#}
+			{%- for item in array -%}
+			{%- if item._type == "portableTextObject" %}
+			<div class="text">
+				{%- set readMore = false -%}
+				{%- set key = "" -%}
+				{%- for param in item.portableText -%}
+				{%- if param._type == "readMore" -%}
+				{%- set readMore = true -%}
+				{%- set key = param._key -%}
+				{%- endif -%}
+				{%- endfor -%}
+				{%- if readMore %}
+				<input type="checkbox" id="{{ key }}" />
+				{%- endif %}
+				{{ item.portableText | portableTextToHtml | replace("\$\{replaceMe\}", key) | safe }}
+			</div>
+			{%- elif item._type == "imageObject" %}
+			<div class="image">
+				<figure style="background-image: url('{{ item.image.metadata.lqip }}'); padding-top: calc(100% / {{ item.image.metadata.dimensions.aspectRatio }});">
+					{%- set image -%}
+						{%- responsiveImage item.image, "500, 800, 1100, 1500, 2000, 2500", "100vw" -%}
+					{%- endset %}
+					{%- if item.caption and item.caption.length != 0 -%}
+					{%- set alt = item.caption | portableTextToPlainText | truncate(160) -%}
+					{%- else -%}
+					{%- set alt = "" -%}
+					{%- endif %}
+					{{ image | strip | replace("<img", '<img alt="' + alt + '"' + ' title="' + alt + '"' + 'data-zoomable="direct"') | safe }}
+					{%- if item.caption and item.caption.length != 0 %}
+					<figcaption>
+						{{ item.caption | portableTextToHtml | safe }}
+					</figcaption>
+					{%- endif %}
+				</figure>
+			</div>
+			{%- elif item._type == "embeddedMediaObject" -%}
+			{%- set width = item.embeddedMedia | getAttributeFromString("width") | int -%}
+			{%- set height = item.embeddedMedia | getAttributeFromString("height") | int -%}
+			{%- set aspectRatio = width / height %}
+			<div class="embed" style="padding-top: calc(100% / {{ aspectRatio }});">
+				{{ item.embeddedMedia | strip | safe }}
+			</div>
+			{%- elif item._type == "keyValueObject" -%}
+			{%- set currentIndex = loop.index0 -%}
+			{%- set previousIndex = currentIndex - 1 -%}
+			{%- set nextIndex = currentIndex + 1 -%}
+			{%- if array[previousIndex]._type != "keyValueObject" %}
+			<div class="keyValuePair">
+				<dl>
+				{%- endif %}
+					<dt>
+						{{ item.key }}
+					</dt>
+					{%- for value in item.value %}
+					<dd>
+						{{ value }}
+					</dd>
+					{%- endfor -%}
+				{%- if array[nextIndex]._type != "keyValueObject" %}
+				</dl>
+			</div>
+			{%- endif -%}
+			{%- elif item._type == "mainImagePlaceholder" and type == "page" %}
+			<div class="image">
+				<figure style="background-image: url('{{ sPage.pageMainImage.metadata.lqip }}'); padding-top: calc(100% / {{ sPage.pageMainImage.metadata.dimensions.aspectRatio }});">
+					{%- if sPage.pageMainImage.caption and sPage.pageMainImage.caption.length != 0 -%}
+					{%- set alt = sPage.pageMainImage.caption | portableTextToPlainText | truncate(160) -%}
+					{%- else -%}
+					{%- set alt = "" -%}
+					{%- endif %}
+					{{ pageMainImage | strip | replace("<img", '<img alt="' + alt + '"' + ' title="' + alt + '"' + 'data-zoomable="direct"') | safe }}
+					{%- if sPage.pageMainImage.caption and sPage.pageMainImage.caption.length != 0 %}
+					<figcaption>
+						{{ sPage.pageMainImage.caption | portableTextToHtml | safe }}
+					</figcaption>
+					{%- endif %}
+				</figure>
+			</div>
+			{%- elif item._type == "mainDescriptionPlaceholder" and type == "page" %}
+			<div class="text">
+				{%- set readMore = false -%}
+				{%- set key = "" -%}
+				{%- for param in sPage.pageMainDescription -%}
+				{%- if param._type == "readMore" -%}
+				{%- set readMore = true -%}
+				{%- set key = param._key -%}
+				{%- endif -%}
+				{%- endfor -%}
+				{%- if readMore %}
+				<input type="checkbox" id="{{ key }}" />
+				{%- endif %}
+				{{ sPage.pageMainDescription | portableTextToHtml | replace("\$\{replaceMe\}", key) | safe }}
+			</div>
+			{%- elif item._type == "mainImagePlaceholder" and type == "entry" %}
+			<div class="image">
+				<figure style="background-image: url('{{ entry.entryMainImage.metadata.lqip }}'); padding-top: calc(100% / {{ entry.entryMainImage.metadata.dimensions.aspectRatio }});">
+					{%- set entryMainImage -%}
+						{%- responsiveImage entry.entryMainImage, "500, 800, 1100, 1500, 2000, 2500", "100vw" -%}
+					{%- endset -%}
+					{%- if entry.entryMainImage.caption and entry.entryMainImage.caption.length != 0 -%}
+					{%- set alt = entry.entryMainImage.caption | portableTextToPlainText | truncate(160) -%}
+					{%- else -%}
+					{%- set alt = "" -%}
+					{%- endif %}
+					{{ entryMainImage | strip | replace("<img", '<img alt="' + alt + '"' + ' title="' + alt + '"' + 'data-zoomable="direct"') | safe }}
+					{%- if entry.entryMainImage.caption and entry.entryMainImage.caption.length != 0 %}
+					<figcaption>
+						{{ entry.entryMainImage.caption | portableTextToHtml | safe }}
+					</figcaption>
+					{%- endif %}
+				</figure>
+			</div>
+			{%- elif item._type == "mainDescriptionPlaceholder" and type == "entry" %}
+			<div class="text">
+				{%- set readMore = false -%}
+				{%- set key = "" -%}
+				{%- for param in entry.entryMainDescription -%}
+				{%- if param._type == "readMore" -%}
+				{%- set readMore = true -%}
+				{%- set key = param._key -%}
+				{%- endif -%}
+				{%- endfor -%}
+				{%- if readMore %}
+				<input type="checkbox" id="{{ key }}" />
+				{%- endif %}
+				{{ entry.entryMainDescription | portableTextToHtml | replace("\$\{replaceMe\}", key) | safe }}
+			</div>
+			{%- else %}
+			<!-- {{ item._type }} -->
+			{%- endif -%}
+			{%- endfor -%}
+			{%- endmacro -%}
+
+		{%- macro entryFeed(array) -%}
+		{#-
+			array: array of entries
+		-#}
+		{%- set testArray = array.concat(array, array, array, array, array, array, array, array, array, array, array, array) %}
+		<ol class="feed" style="--display-aspect-ratio: {{ displayAspectRatio }}; --display-rows: {{ displayRows }}; --display-size: {{ displaySize }};" data-display-size="{{ displaySize }}" data-display-rows="{{ displayRows }}">
+			{%- set counter = 0 -%}
+			{%- for item in array -%}
+			{%- if item.entryTitle and item.entryTitle.length != 0 -%}
+			{%- set entryTitle = item.entryTitle -%}
+			{%- else -%}
+			{%- set entryTitle = "" -%}
+			{%- endif -%}
+			{%- if loop.first or (loop.index - 1) % displaySize == 0 -%}
+			{%- set counter = counter + 1 %}
+			<li class="feed-page" data-index="{{ counter }}">
+			{%- endif %}
+				<article>
+					<div>
+						<figure style="background-image: url('{{ item.entryMainImage.metadata.lqip }}'); /* padding-top: calc(100% / {{ item.entryMainImage.metadata.dimensions.aspectRatio }}); */">
+							{%- set entryMainImage -%}
+								{%- responsiveImage item.entryMainImage, "500, 800, 1100, 1500, 2000, 2500", "100vw" -%}
+							{%- endset -%}
+							{%- if item.entrySlug.current and item.entrySlug.current.length != 0 %}
+							<a href="{{ siteInformation.siteBaseUrl }}/{{ item.entryTypeSlug.current }}/{{ item.entrySlug.current }}/" title="{{ entryTitle }}">
+							{%- else %}
+							<a href="{{ item.entryMainImage.metadata.url }}" title="{{ entryTitle }}" data-zoomable="direct">
+							{%- endif %}
+								{{ entryMainImage | strip | replace("<img", '<img alt="' + entryTitle + '"' + 'data-zoomable="indirect"') | safe }}
+							</a>
+							<figcaption>
+								{%- if item.entryMainImage.caption and item.entryMainImage.caption.length != 0 %}
+								{{ item.entryMainImage.caption | portableTextToHtml | safe }}
+								{%- else %}
+								{{ entryTitle }}
+								{%- endif %}
+							</figcaption>
+						</figure>
+					</div>
+					{% if item.entryTitle and item.entryTitle.length != 0 %}
+					<header>
+						<h2>
+							{%- if item.entrySlug.current and item.entrySlug.current.length != 0 %}
+							<a href="{{ siteInformation.siteBaseUrl }}/{{ item.entryTypeSlug.current }}/{{ item.entrySlug.current }}/" title="{{ entryTitle }}">
+							{%- else %}
+							<a href="{{ item.entryMainImage.metadata.url }}" title="{{ entryTitle }}" data-zoomable="direct">
+							{%- endif %}
+								{{ entryTitle }}
+							</a>
+						</h2>
+					</header>
+					{%- endif %}
+				</article>
+			{%- if loop.last or loop.index % displaySize == 0 %}
+			</li>
+			{%- endif -%}
+			{%- endfor %}
+		</ol>
+		{%- if counter > 1 -%}
+		{%- for i in range(0, 2) %}
+		<div class="feed-control" aria-hidden="true">
+			{%- if loop.first %}
+			<div title="Previous" data-direction="-1">
+				{%- from "icons.njk" import leftArrow %}
+				{{ leftArrow() | strip | safe }}
+			</div>
+			{%- elif loop.last %}
+			<div title="Next" data-direction="1">
+				{%- from "icons.njk" import rightArrow %}
+				{{ rightArrow() | strip | safe }}
+			</div>
+			{%- endif %}
+		</div>
+		{%- endfor %}
+		<div class="feed-counter" aria-hidden="true">
+			{%- for i in range(0, counter) %}
+			<div title="{{ loop.index }}" data-index="{{ loop.index }}"></div>
+			{%- endfor %}
+		</div>
+		{%- endif -%}
+		{%- endmacro %}

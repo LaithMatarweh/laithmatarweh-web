@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en-GB" dir="auto" class="noJs">
+<head>
+	<meta charset="UTF-8">
+	<title>{%- if title and page.url != "/" -%} {{ title }} | {% endif -%} {{ siteInformation.siteTitle -}}</title>
+	<meta name="author" content="{{ siteInformation.siteAuthor }}">
+	<meta name="description" content="{%- if description and description.length != 0 -%} {{ description | truncate(160) }} {%- else -%} {{ siteInformation.siteDescription | truncate(160) }} {%- endif -%}">
+	<meta name="keywords" content="{{ siteInformation.siteKeywords.join(', ') }} {%- if keywords and keywords.length != 0 %}, {{ keywords.split(',').join(', ') }} {%- endif -%}">
+	{#- <meta name="theme-color" media="(prefers-color-scheme: light)" content=""> -#}
+	{#- <meta name="theme-color" media="(prefers-color-scheme: dark)" content=""> #}
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="robots" content="max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+	<link rel="canonical" href="{{ siteInformation.siteUrl }}{{ siteInformation.siteBaseUrl }}{{ page.url }}">
+	<link rel="preload" href="{{ siteInformation.siteBaseUrl }}/assets/css/main.css" as="style">
+	<link rel="preload" href="{{ siteInformation.siteBaseUrl }}/assets/css/fonts.css" as="style">
+	<link rel="stylesheet" href="{{ siteInformation.siteBaseUrl }}/assets/css/main.css" />
+	<link rel="stylesheet" href="{{ siteInformation.siteBaseUrl }}/assets/css/fonts.css" />
+	<meta property="og:type" content="website">
+	<meta property="og:url" content="{{ siteInformation.siteUrl }}{{ siteInformation.siteBaseUrl }}{{ page.url }}">
+	<meta property="og:title" content="{%- if title and page.url != "/" -%} {{ title }} | {% endif -%} {{ siteInformation.siteTitle -}}">
+	<meta property="og:description" content="{%- if description and description.length != 0 -%} {{ description | truncate(160) }} {%- else -%} {{ siteInformation.siteDescription | truncate(160) }} {%- endif -%}">
+	<meta property="og:image" content="{{ image | safe }}">
+	<meta property="twitter:card" content="summary_large_image">
+	<meta property="twitter:url" content="{{ siteInformation.siteUrl }}{{ siteInformation.siteBaseUrl }}{{ page.url }}">
+	<meta property="twitter:title" content="{%- if title and page.url != "/" -%} {{ title }} | {% endif -%} {{ siteInformation.siteTitle -}}">
+	<meta property="twitter:description" content="{%- if description and description.length != 0 -%} {{ description | truncate(160) }} {%- else -%} {{ siteInformation.siteDescription | truncate(160) }} {%- endif -%}">
+	<meta property="twitter:image" content="{{ image | safe }}">
+	{#- reserved for favicon -#}
+	<script defer src="{{ siteInformation.siteBaseUrl }}/assets/js/main.js"></script>
+	{#- reserved for analytics #}
+	<style>
+		:root {
+			--number-nav-pages: {{ collections.simplePages.length }}rem;
+			--number-nav-projects: {{ collections.entryTypes.length }}rem;
+		}
+		@media (prefers-color-scheme: light) {
+			:root {
+				--color-text: #2a2a2a;
+				--color-ui: #999999;
+				--color-background: #ffffff;
+				--color-background-80: #ffffffdd;
+			}
+		}
+		@media (prefers-color-scheme: dark) {
+			:root {
+				--color-text: #ffffff;
+				--color-ui: lightgrey;
+				--color-background: #000000;
+				--color-background-80: #000000dd;
+			}
+		}
+		a[href*="mailto:"],
+		a[href*="//"]:not([href*="{{ siteInformation.siteUrl }}{{ siteInformation.siteBaseUrl }}"]) {
+			cursor: alias;
+		}
+	</style>
+</head>
+<body>
+	<header>
+		<h1>
+			<a href="{{ siteInformation.siteBaseUrl }}/" title="Home">
+				{% set titleArray = siteInformation.siteTitle.split(" ") -%}
+				{%- for word in titleArray -%}
+				{%- if loop.index == titleArray.length - 1 -%}
+				{{ word }}&nbsp;
+				{%- else -%}{{ word }} {% endif -%}
+				{%- endfor %}
+			</a>
+		</h1>
+	</header>
+	<nav>
+		<h1 class="atOnly">
+			Pages
+		</h1>
+		<ul>
+			{%- for p in collections.simplePages %}
+			<li>
+				<a href="{{ siteInformation.siteBaseUrl }}{{ p.url }}" title="{{ p.data.title }}" {%- if p.url == page.url %} aria-current="page" {%- endif -%}>
+					{{ p.data.title }}
+				</a>
+			</li>
+			{%- endfor %}
+		</ul>
+	</nav>
+	<nav>
+		<h1 class="atOnly">
+			Projects
+		</h1>
+		<ul>
+			{%- for t in collections.entryTypes %}
+			<li>
+				<a href="{{ siteInformation.siteBaseUrl }}{{ t.url }}" title="{{ t.data.title }}" {%- if t.url in page.url %} aria-current="page" {%- endif -%}>
+					{{ t.data.title }}
+				</a>
+			</li>
+			{%- endfor %}
+		</ul>
+	</nav>
+	<main class="{{- 'type' if type or sPage.homepageFeed -}} {{- 'page' if sPage and not sPage.homepageFeed -}} {{- 'entry' if entry.entryContent -}}">
+		{{ content | safe }}
+	</main>
+	<footer>
+		{%- if siteInformation.siteInstagramLink and siteInformation.siteInstagramLink.length != 0 %}
+		<div>
+			<a href="{{ siteInformation.siteInstagramLink }}" title="Instagram">
+				{%- from "icons.njk" import instagram %}
+				{{ instagram() | strip | safe }}
+			</a>
+		</div>
+		{%- endif -%}
+		{%- if siteInformation.siteFooterInformation and siteInformation.siteFooterInformation.length != 0 %}
+		<dl>
+			{%- for item in siteInformation.siteFooterInformation %}
+			<dt>
+				{{ item.key }}
+			</dt>
+			<dd>
+				{{ item.value | join(" — ") }}
+			</dd>
+			{%- endfor %}
+		</dl>
+		{%- endif %}
+	</footer>
+	<template>
+		{% siteLogo siteInformation.siteLogo.url, siteInformation.siteTitle %}
+		{%- from "icons.njk" import closeButton -%}
+		{%- from "icons.njk" import leftArrow -%}
+		{%- from "icons.njk" import rightArrow %}
+		{{ closeButton() | strip | safe }}
+		{{ leftArrow() | strip | safe }}
+		{{ rightArrow() | strip | safe }}
+	</template>
+	{%- if page.url == "/" %}
+	<div class="splashscreen" aria-hidden="true">
+		{{ "/_site/assets/media/logo.svg" | svgContents | safe }}
+		<span>
+			{% set titleArray = siteInformation.siteTitle.split(" ") -%}
+			{%- for word in titleArray -%}
+			{%- if loop.index == titleArray.length - 1 -%}
+			{{ word }}&nbsp;
+			{%- else -%}{{ word }} {% endif -%}
+			{%- endfor %}
+		</span>
+	</div>
+	{%- endif %}
+</body>
+</html>

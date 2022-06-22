@@ -1,0 +1,26 @@
+---
+pagination:
+  data: entryType
+  alias: type
+  size: 1
+  addAllPagesToCollections: true
+layout: main.njk
+tags: entryTypes
+permalink: "{{ siteInformation.siteBaseUrl }}/{{ type.typeSlug.current }}/"
+eleventyComputed:
+  title: "{{ type.typePlural }}"
+  keywords: "{{ type.typeKeywords }}"
+  displayAspectRatio: "{{ type.feedDisplayAspectRatio }}"
+  displayRows: "{{ type.feedDisplayRows }}"
+  displaySize: "{{ type.feedDisplaySize }}"
+---
+
+		<header class="atOnly">
+			<h1>
+				{{ type.typePlural }}
+			</h1>
+		</header>
+		{%- if type.entries and type.entries.length != 0 -%}
+		{%- from "macros.njk" import entryFeed with context -%}
+		{{ entryFeed(type.entries) }}
+		{%- endif %}

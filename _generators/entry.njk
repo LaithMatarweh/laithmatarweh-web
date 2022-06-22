@@ -1,0 +1,127 @@
+---js
+{
+  pagination: {
+    data: "entry",
+    alias: "entry",
+    size: 1,
+    addAllPagesToCollections: true,
+    before: function(paginationData) {
+      const entriesWithSlug = paginationData.filter(entry => {
+        return entry.entrySlug
+      })
+      return entriesWithSlug
+	},
+  },
+  layout: "main.njk",
+  tags: "entries",
+  permalink: "{{ siteInformation.siteBaseUrl }}/{{ entry.entryTypeSlug.current }}/{{ entry.entrySlug.current }}/",
+  eleventyComputed: {
+    title: "{{ entry.entryTitle }}",
+    description: "{{ entry.entryMainDescription | portableTextToPlainText }}",
+    image: "{% if entry.entryMainImage and entry.entryMainImage.length != 0 %}{% croppedUrlFor entry.entryMainImage, 1200, 628 %}{% endif %}",
+    keywords: "{{ entry.entryKeywords }}",
+  },
+}
+---
+		{%- set aEntry = entry -%}
+		{%- if entry.entryContent and entry.entryContent.length != 0 -%}
+		{%- if entry.entryTitle and entry.entryTitle.length != 0 %}
+		<header class="entry-header">
+			<h1>
+				<a href="{{ siteInformation.siteBaseUrl }}{{ page.url }}#" data-target="0">
+					{{ entry.entryTitle }}
+				</a>
+			</h1>
+			{%- if entry.entryMetadata and entry.entryMetadata.length != 0 -%}
+			{%- set entrySubtitle = entry.entryMetadata | selectattr("subtitle") | first -%}
+			{%- if entrySubtitle and entrySubtitle.length != 0 -%}
+			<p>
+				<strong>
+					{{ entrySubtitle.subtitle }}
+				</strong>
+			</p>
+			{%- endif -%}
+			{%- set entryMetadata = entry.entryMetadata | selectattr("key") -%}
+			{%- if entryMetadata and entryMetadata.length != 0 -%}
+			{%- for item in entryMetadata -%}
+			{%- if loop.first %}
+			<dl>
+			{%- endif %}
+				<div>
+					<dt>
+						{{ item.key }}: 
+					</dt>
+					{%- for value in item.value %}
+					<dd>
+						{{ value }}
+					</dd>
+					{%- endfor %}
+				</div>
+			{%- if loop.last %}
+			</dl>
+			{%- endif -%}
+			{%- endfor -%}
+			{%- endif %}
+			{%- endif -%}
+			{%- if entry.entryContent.length > 1 %}
+			<nav>
+				<h2 class="atOnly">
+					Sections
+				</h2>
+				<ol>
+					{%- for item in entry.entryContent -%}
+					{%- if item.sectionHeading and item.sectionHeading.length != 0 %}
+					<li>
+						{%- if item._type == "mainSection" or item._type == "genericSection" %}
+						<a href="{{ siteInformation.siteBaseUrl }}{{ page.url }}#{{ item.sectionHeading | slugify }}" data-target="{{ item.sectionHeading | slugify }}" {%- if item._type == "mainSection" %} aria-current="location" {%- endif -%}>
+							{{ item.sectionHeading }}
+						</a>
+						{%- else %}
+						<a href="{{ item.sectionFile.metadata.url }}">
+							{{ item.sectionHeading }}
+						</a>
+						{%- endif %}
+					</li>
+					{%- endif -%}
+					{%- endfor %}
+				</ol>
+			</nav>
+			{%- endif %}
+		</header>
+		{%- endif -%}
+		{%- for item in entry.entryContent -%}
+		{%- if entry.entryContent.length > 1 -%}
+		{%- if item.sectionHeading and item.sectionHeading.length != 0 %}
+		<section class="entry-section" id="{{ item.sectionHeading | slugify }}" {%- if item._type == "mainSection"%} data-main-section="true" aria-current="location" {%- endif -%}>
+		{%- else %}
+		<div class="entry-section" {%- if item._type == "mainSection"%} data-main-section="true" aria-current="location" {%- endif -%}>
+		{%- endif -%}
+		{%- else %}
+		<div class="entry-section" {%- if item._type == "mainSection"%} data-main-section="true" aria-current="location" {%- endif -%}>
+		{%- endif -%}
+			{%- if item.sectionHeading and item.sectionHeading.length != 0 %}
+			<header class="atOnly">
+				<h1>
+					{{ item.sectionHeading }}
+				</h1>
+			</header>
+			{%- endif -%}
+			{%- if item._type == "mainSection" or item._type == "genericSection" -%}
+			{%- from "macros.njk" import contentArray with context -%}
+			{{ contentArray(item.sectionContent, "entry") }}
+			{%- elif item._type == "fileSection" %}
+			<a href="{{ item.sectionFile.metadata.url }}">
+				[Download]
+			</a>
+			{%- endif -%}
+		{%- if entry.entryContent.length > 1 -%}
+		{%- if item.sectionHeading and item.sectionHeading.length != 0 %}
+		</section>
+		{%- else %}
+		</div>
+		{%- endif -%}
+		{%- else %}
+		</div>
+		{%- endif -%}
+		{%- endfor -%}
+		{%- endif %}

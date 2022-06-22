@@ -1,0 +1,29 @@
+{
+	"name": "web-laithmatarwehstudioforarchitecture",
+	"private": true,
+	"version": "1.0.0",
+	"description": "",
+	"main": "package.json",
+	"author": "Bashar al-Idreesi <basharalidreesi@gmail.com>",
+	"license": "UNLICENSED",
+	"scripts": {
+		"watch:sass": "sass --watch --no-source-map _sass:_site/assets/css",
+		"build:sass": "sass --no-source-map _sass:_site/assets/css",
+		"watch:eleventy": "eleventy --serve",
+		"build:eleventy": "eleventy",
+		"start": "npm-run-all build:sass --parallel watch:*",
+		"build": "npm-run-all build:*"
+	},
+	"keywords": [],
+	"dependencies": {
+		"@11ty/eleventy": "^1.0.1",
+		"@11ty/eleventy-img": "^2.0.1",
+		"@portabletext/to-html": "^1.0.3",
+		"@sanity/client": "^3.3.0",
+		"dotenv": "^16.0.1",
+		"eleventy-plugin-sanity-image": "^0.1.1",
+		"eleventy-plugin-svg-contents": "^0.7.0",
+		"npm-run-all": "^4.1.5",
+		"sass": "^1.51.0"
+	}
+}
