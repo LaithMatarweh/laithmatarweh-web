@@ -15,7 +15,7 @@ module.exports = async function () {
 		siteKeywords,
 		siteUrl,
 		siteBaseUrl,
-		siteAnalyticsSnippet
+		siteAnalyticsSnippet,
 	}[0]
 	`
 	const params = {}

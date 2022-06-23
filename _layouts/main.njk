@@ -25,9 +25,9 @@
 	<meta property="twitter:title" content="{%- if title and page.url != "/" -%} {{ title }} | {% endif -%} {{ siteInformation.siteTitle -}}">
 	<meta property="twitter:description" content="{%- if description and description.length != 0 -%} {{ description | truncate(160) }} {%- else -%} {{ siteInformation.siteDescription | truncate(160) }} {%- endif -%}">
 	<meta property="twitter:image" content="{% if image and image.legnth != 0 %}{{ image | safe }}{% else %}{{ siteInformation.siteLogo.url | safe }}{{ siteInformation.siteLogo.siteLogoTransformationQuery | safe }}{% endif %}">
-	{#- reserved for favicon -#}
+	<!-- favicon -->
 	<script defer src="{{ siteInformation.siteBaseUrl }}/assets/js/main.js"></script>
-	{#- reserved for analytics #}
+	{%- if siteInformation.siteAnalyticsSnippet and siteInformation.siteAnalyticsSnippet.length != 0 -%} {{ siteInformation.siteAnalyticsSnippet | strip | safe }} {%- endif %}
 	<style>
 		:root {
 			--number-nav-pages: {{ collections.simplePages.length }}rem;
