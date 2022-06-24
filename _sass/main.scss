@@ -74,13 +74,14 @@ body {
 		padding-inline-start: 5%;
 		padding-inline-end: 2.5%;
 		font-family: var(--font-sans);
-		font-size: 0.85rem;
+		font-size: 0.7rem;
 		font-weight: bolder;
 		text-transform: uppercase;
 		letter-spacing: 0.25rem;
 		background: var(--color-background);
 		h1 {
 			min-height: 1rem;
+			line-height: 1rem;
 		}
 	}
 
@@ -961,13 +962,13 @@ main:where(.page) {
 	align-items: center;
 	justify-content: center;
 	pointer-events: none;
-	animation: fade-out 1.25s;
+	animation: fade-out 2s;
 	animation-fill-mode: forwards;
 	@keyframes fade-out {
 		0% {
 			opacity: 1;
 		}
-		50% {
+		60% {
 			opacity: 1;
 		}
 		100% {
@@ -984,12 +985,12 @@ main:where(.page) {
 		display: block;
 		width: 50%;
 		height: auto;
-		max-width: 7.5rem;
+		max-width: 5rem;
 		fill: var(--color-text);
 	}
 	& > span {
 		font-family: var(--font-sans);
-		font-size: 0.85rem;
+		font-size: 0.6rem;
 		font-weight: bolder;
 		text-transform: uppercase;
 		letter-spacing: 0.25rem;
@@ -1212,7 +1213,7 @@ html:not(.noJs) {
 }
 
 @media (prefers-reduced-motion: reduce) {
-	* {
+	*:not(.splashscreen) {
 		animation: none !important;
 		transition: none !important;
 		scroll-behavior: auto !important;
