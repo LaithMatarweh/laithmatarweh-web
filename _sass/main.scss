@@ -1129,6 +1129,13 @@ main:where(.page) {
 				stroke-width: 0.15rem;
 			}
 		}
+		&,
+		& * {
+			-moz-user-select: contain;
+			-webkit-user-select: contain;
+			-ms-user-select: contain;
+			user-select: contain;
+		}
 	}
 	.next-lightbox svg {
 		transform: translate(-50%, calc(-50% - 2.5rem));
