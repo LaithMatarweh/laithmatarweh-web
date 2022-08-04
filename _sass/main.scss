@@ -844,6 +844,7 @@ main:where(.page) {
 	@media (max-width: 512px) {
 		.tempCaption {
 			padding-block-start: 0.5rem !important;
+			padding-block-end: 0.5rem !important;
 		}
 	}
 
@@ -885,6 +886,7 @@ main:where(.page) {
 
 	.image {
 		.tempCaption {
+			font-size: 80%;
 			max-width: 80%;
 			text-align: center;
 			align-self: center;
