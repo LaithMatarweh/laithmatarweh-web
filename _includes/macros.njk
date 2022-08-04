@@ -37,6 +37,11 @@
 					</figcaption>
 					{%- endif %}
 				</figure>
+				{%- if item.caption and item.caption.length != 0 %}
+				<div class="tempCaption">
+					{{ item.caption | portableTextToHtml | safe }}
+				</div>
+				{%- endif %}
 			</div>
 			{%- elif item._type == "embeddedMediaObject" -%}
 			{%- set width = item.embeddedMedia | getAttributeFromString("width") | int -%}
@@ -80,6 +85,11 @@
 					</figcaption>
 					{%- endif %}
 				</figure>
+				{%- if sPage.pageMainImage.caption and sPage.pageMainImage.caption.length != 0 %}
+				<div class="tempCaption">
+					{{ entry.entryMainImage.caption | portableTextToHtml | safe }}
+				</div>
+				{%- endif %}
 			</div>
 			{%- elif item._type == "mainDescriptionPlaceholder" and type == "page" %}
 			<div class="text">
@@ -114,6 +124,11 @@
 					</figcaption>
 					{%- endif %}
 				</figure>
+				{%- if entry.entryMainImage.caption and entry.entryMainImage.caption.length != 0 %}
+				<div class="tempCaption">
+					{{ entry.entryMainImage.caption | portableTextToHtml | safe }}
+				</div>
+				{%- endif %}
 			</div>
 			{%- elif item._type == "mainDescriptionPlaceholder" and type == "entry" %}
 			<div class="text">
@@ -175,6 +190,14 @@
 							</figcaption>
 						</figure>
 					</div>
+					{%- if item.entrySlug.current and item.entrySlug.current.length != 0 -%}
+					{%- else -%}
+					{%- if item.entryMainImage.caption and item.entryMainImage.caption.length != 0 %}
+					<div class="tempCaption">
+						{{ item.entryMainImage.caption | portableTextToHtml | safe }}
+					</figcaption>
+					{%- endif -%}
+					{%- endif -%}
 					{% if item.entryTitle and item.entryTitle.length != 0 %}
 					<header>
 						<h2>

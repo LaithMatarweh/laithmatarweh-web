@@ -206,7 +206,7 @@ const lm = {
 		},
 		requestLightbox: function(target) {
 			if (window.matchMedia("(max-width: 1024px)").matches) {
-				lm.zoomables.createCaption(target);
+				// lm.zoomables.createCaption(target);
 				return;
 			}
 			let lightbox = document.querySelector(".lightbox");
@@ -217,20 +217,20 @@ const lm = {
 			lm.zoomables.removeLightbox();
 			lm.zoomables.createLightbox(target);
 		},
-		createCaption: function(target) {
-			let imageContainer = target.closest(".entry-section .image") || target.closest(".page-content .image") || target.closest(".feed-page > article");
-			let figCaption = target.closest("figure")?.querySelector("figcaption")?.innerHTML;
-			let existingTempCaption = imageContainer.querySelector(".tempCaption");
-			if (!imageContainer || !figCaption) { return; }
-			if (existingTempCaption) {
-				existingTempCaption.remove();
-				return;
-			}
-			let newWrapper = document.createElement("div");
-			newWrapper.classList.add("tempCaption");
-			newWrapper.innerHTML = figCaption;
-			imageContainer.appendChild(newWrapper);
-		},
+		// createCaption: function(target) {
+		// 	let imageContainer = target.closest(".entry-section .image") || target.closest(".page-content .image") || target.closest(".feed-page > article");
+		// 	let figCaption = target.closest("figure")?.querySelector("figcaption")?.innerHTML;
+		// 	let existingTempCaption = imageContainer.querySelector(".tempCaption");
+		// 	if (!imageContainer || !figCaption) { return; }
+		// 	if (existingTempCaption) {
+		// 		existingTempCaption.remove();
+		// 		return;
+		// 	}
+		// 	let newWrapper = document.createElement("div");
+		// 	newWrapper.classList.add("tempCaption");
+		// 	newWrapper.innerHTML = figCaption;
+		// 	imageContainer.appendChild(newWrapper);
+		// },
 		createLightbox: function(target) {
 			let lightbox = document.createElement("div");
 			let closeLightbox = document.createElement("div");
